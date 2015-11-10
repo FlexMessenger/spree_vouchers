@@ -7,7 +7,7 @@ $ ->
     event.preventDefault()
     $.ajax
       type: "POST"
-      url: "/apply_voucher"
+      url: "/shop/apply_voucher"
       data:
         voucher_number: ($ '#voucher_number').val()
         voucher_order_id: ($ '#voucher_order_id').val()

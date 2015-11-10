@@ -20,7 +20,7 @@ var SpreeVouchers = {
 
       $.ajax({
         type: "POST",
-        url: "/remove_voucher",
+        url: "/shop/remove_voucher",
         data: {
           payment_id: $(this).data('payment-id')
         },
