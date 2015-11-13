@@ -1,2 +1,0 @@
-<!-- insert_bottom "[data-hook=inside_product_cart_form]" -->
-<%= render partial: 'voucher_form_fields', locals: {form: f} %>

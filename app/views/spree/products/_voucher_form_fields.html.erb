@@ -30,5 +30,5 @@
 
   <fieldset id="voucher_address" style="display: none;">
       <legend align="center">Voucher Address</legend>
-      <%= render :partial => 'voucher_address', :locals => { :form => form, :address_type => 'voucher_address', :address => Spree::Address.new(country: Spree::Country.first), :param_prefix => "#{param_prefix}[address_attributes]" } %>
+      <%= render :partial => 'voucher_address', :locals => { :form => f, :address_type => 'voucher_address', :address => Spree::Address.new(country: Spree::Country.first), :param_prefix => "#{param_prefix}[address_attributes]" } %>
   </fieldset>
