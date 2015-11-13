@@ -22,26 +22,26 @@ module Spree
       voucher = Voucher.find_by_number params[:voucher_number]
 
       if voucher
-        voucher_payment_method = Spree::PaymentMethod.available.detect { |pm| 
-          pm.class == Spree::PaymentMethod::Voucher 
-        }
-        
         amount = [voucher.authorizable_amount, 
                   @order.outstanding_balance - @order.voucher_total].min
 
-        # we don't actually want to authorize until the order is completed,
-        # so do a 'pretend' auth to get the approve/reject as well as the new totals
+        # Create adjustment instead create payment with Spree::PaymentMethod::Voucher
+        # Because we don't support multiple payment methods when checkout.
         if amount > 0 && voucher.soft_authorize(amount, @order.currency)
-          @payment = @order.payments.create!(source: voucher,
-                                         payment_method: voucher_payment_method,
-                                         amount: amount)
+          @adjustment = @order.adjustments.build(
+                                         order: @order,
+                                         amount: -1 * amount,
+                                         label: "voucher #{voucher.id} - #{voucher.number}"
+          )
+          @adjustment.save!
+          @order.update!
 
           @no_more_payment_required = @order.total_minus_pending_vouchers <= 0
             
           flash[:notice] = Spree.t(:voucher_applied_for_amount_with_remaining_balance, 
                                  {
-                                   payment_amount: Spree::Money.new(@payment.amount, { currency: @order.currency }),
-                                   available: Spree::Money.new((voucher.authorizable_amount - @payment.amount),{ currency: @order.currency })
+                                   payment_amount: Spree::Money.new(@adjustment.amount, { currency: @order.currency }),
+                                   available: Spree::Money.new((voucher.authorizable_amount - @adjustment.amount),{ currency: @order.currency })
                                  })
         else
           flash[:error] = Spree.t(:unable_to_apply_voucher_with_remaining_balance, {

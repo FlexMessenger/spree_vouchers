@@ -1,0 +1,20 @@
+<% param_prefix = "payment_source[#{payment_method.id}]" %>
+
+<!--
+<p class="field">
+  <%= label_tag "voucher_number", Spree.t(:voucher_number) %><span class="required">*</span><br />
+  <%= text_field_tag "#{param_prefix}[number]", nil, {:id => 'voucher_number', :class => 'required', :size => 19, :maxlength => 19} %>
+</p>
+-->
+
+<script>
+  Spree.voucherPaymentMethod = $('#payment_method_' + <%= payment_method.id %>);
+
+  $(document).ready(function() {
+    return $('#checkout_form_payment [data-hook=buttons]').click(function() {
+      if (Spree.voucherPaymentMethod.is(':visible')) {
+        return $('#checkout_form_payment').trigger('submit');
+      }
+    });
+  });
+</script>
