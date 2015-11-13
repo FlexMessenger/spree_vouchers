@@ -14,7 +14,7 @@ module SpreeVouchers
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
 
-      Spree::Order.register_line_item_comparison_hook(:vouchers_match) if Spree::Order.table_exists?
+      Spree::Order.register_line_item_comparison_hook(:vouchers_attributes_match) if Spree::Order.table_exists?
     end
 
     initializer "spree_vouchers.register.payment_methods" do |app|

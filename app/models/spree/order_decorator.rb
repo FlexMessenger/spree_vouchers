@@ -21,6 +21,10 @@ module Spree
       total - voucher_total
     end
 
+    def has_taxon_product?(taxon_name)
+      products.select{ |p| p.taxons.map(&:name).include?(taxon_name) }.present?
+    end
+
     Spree::Order.state_machine.after_transition  :to => :complete, :do => :activate_vouchers
     Spree::Order.state_machine.after_transition  :to => :canceled, :do => :deactivate_vouchers
 
@@ -50,9 +54,8 @@ module Spree
 
     def vouchers_attributes_match(line_item, other_line_item_or_voucher_attributes)
       existing_voucher = line_item.vouchers.first
-
-      if other_line_item_or_voucher_attributes.kind_of? Array
-        voucher_attrs = other_line_item_or_voucher_attributes.first
+      if other_line_item_or_voucher_attributes[:vouchers_attributes].kind_of? Array
+        voucher_attrs = other_line_item_or_voucher_attributes[:vouchers_attributes].first
          # if there aren't any voucher attributes, there's a 'match'
         return true if existing_voucher.nil? && (voucher_attrs.nil? || voucher_attrs.empty?)
 

@@ -4,31 +4,34 @@
 
 <%# if @product.voucher? .... %>
 
-<% param_prefix = "options[vouchers_attributes][]" %>
+<% if @product.taxons.map(&:name).include?('Gift Card') %>
+  <% param_prefix = "options[vouchers_attributes][]" %>
   <%= hidden_field_tag "#{param_prefix}[currency]", current_currency %>
 
   <fieldset>
-    From: <%= text_field_tag "#{param_prefix}[voucher_from]" %>
+    From: <%= text_field_tag "#{param_prefix}[voucher_from]", spree_current_user.try(:name) %>
   </fieldset>
 
   <fieldset>
-    To: <%= text_field_tag "#{param_prefix}[voucher_to]" %>
+    To: <%= text_field_tag "#{param_prefix}[voucher_to]", '', placeholder: 'example@domain.com' %>
   </fieldset>
 
   <fieldset>
-    Message: <%= text_field_tag "#{param_prefix}[message]" %>
+    Message: <%= text_field_tag "#{param_prefix}[message]", 'Gift Card' %>
   </fieldset>
 
   <fieldset>
-    Amount: <%= number_field_tag "#{param_prefix}[original_amount]" %>
+    Amount: <%= number_field_tag "#{param_prefix}[original_amount]", 0 %>
   </fieldset>
 
   <fieldset>
     Deliver by email: <%= radio_button_tag "#{param_prefix}[delivery_method]", "email", true, id: 'email_delivery' %>
-    Deliver by mail: <%= radio_button_tag "#{param_prefix}[delivery_method]", "physical", false, id: 'physical_delivery' %>
+    Deliver by
+    mail: <%= radio_button_tag "#{param_prefix}[delivery_method]", "physical", false, id: 'physical_delivery' %>
   </fieldset>
 
   <fieldset id="voucher_address" style="display: none;">
-      <legend align="center">Voucher Address</legend>
-      <%= render :partial => 'voucher_address', :locals => { :form => f, :address_type => 'voucher_address', :address => Spree::Address.new(country: Spree::Country.first), :param_prefix => "#{param_prefix}[address_attributes]" } %>
+    <legend align="center">Voucher Address</legend>
+    <%= render :partial => 'voucher_address', :locals => {:form => f, :address_type => 'voucher_address', :address => Spree::Address.new(country: Spree::Country.first), :param_prefix => "#{param_prefix}[address_attributes]"} %>
   </fieldset>
+<% end %>
