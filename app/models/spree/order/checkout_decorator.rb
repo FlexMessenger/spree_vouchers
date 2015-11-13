@@ -1,7 +1,7 @@
 Spree::Order.class_eval do
   private
     # need to handle zero params coming in when no amount due (due to voucher application)
-    durably_decorate :update_params_payment_source, mode: 'soft', sha: 'ca675943720dc5d195e05dc006ac9c48f77d31ac' do
+    durably_decorate :update_params_payment_source, mode: 'soft', sha: '126e3e8ab7371f972b002a06d112e06d49d21926' do
       # respond_to check is necessary due to issue described in #2910
       if has_checkout_step?("payment") && self.payment?
         if @updating_params[:payment_source].present?
